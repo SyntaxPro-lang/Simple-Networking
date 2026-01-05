@@ -25,11 +25,11 @@ function ClientNetwork:On(messageName: string, callback)
 end
 
 -- listen to bindable event (client to client)
-function ServerNetwork:OnBind(messageName: string, callback)
+function ClientNetwork:OnBind(messageName: string, callback)
 	bindListeners[messageName] = callback
 end
 
-function ServerNetwork:FireBind(messageName: string, data: any)
+function ClientNetwork:FireBind(messageName: string, data: any)
 	BindableEvent:Fire(
 	{
 		Name = messageName,
