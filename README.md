@@ -2,7 +2,7 @@
 this module was made by my friend @[YMA](https://x.com/YmaisMe) it's a pretty useful module for me and I had to make some changes to it because there were previous issues with compression but since my games are quite simple I don't need compression.
 
 if you'd like to hire me for your project dm me on discord
-altaccount6621
+swiftlyxdev
 
 ## HOW TO USE
 
