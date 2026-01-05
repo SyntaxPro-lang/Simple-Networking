@@ -24,3 +24,7 @@ Networking:On("Test", function(player: Player, data: Template)
   print("message from client to server")
 end)
 ```
+
+
+if you're having issues dm me on discord
+swiftlyxdev
