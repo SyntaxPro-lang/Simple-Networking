@@ -13,6 +13,7 @@ end)
 ### Server
 ```lua
 local Networking = require(ReplicatedStorage.Networking.server)
+
 Networking:On("Test", function(player: Player, data: Template)
   print("message from client to server")
 end)
