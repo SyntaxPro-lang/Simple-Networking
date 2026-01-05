@@ -1,11 +1,12 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RemoteEvent = ReplicatedStorage:WaitForChild("RemoteEvent")
+local RemoteFunction: RemoteFunction = ReplicatedStorage:WaitForChild("RemoteFunction")
 
 local ClientNetwork = {}
 
 local BindableEvent: BindableEvent = ReplicatedStorage:FindFirstChild("BindableEvent") or Instance.new("BindableEvent", ReplicatedStorage)
+BindableEvent.Name = "client"
 local bindListeners = {}
-
 
 function ClientNetwork:Send(messageName: string, data: any)
 	local packet = {
@@ -45,5 +46,21 @@ BindableEvent.Event:Connect(function(payload)
 		callback(data)
 	end
 end)
+
+function ClientNetwork:Invoke(messageName: string, data: any)
+	local packet = {
+		Name = messageName,
+		Data = data
+	}
+	RemoteFunction:InvokeServer(packet)
+end
+
+function ClientNetwork:OnInvoke(messageName: string, callback)
+	RemoteFunction.OnClientInvoke = function(payload)
+		if payload.Name == messageName then
+			callback(payload.Data)
+		end
+	end
+end
 
 return ClientNetwork
