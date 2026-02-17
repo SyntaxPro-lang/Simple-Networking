@@ -4,10 +4,6 @@ local RemoteFunction: RemoteFunction = ReplicatedStorage:WaitForChild("RemoteFun
 
 local ClientNetwork = {}
 
-local BindableEvent: BindableEvent = ReplicatedStorage:FindFirstChild("BindableEvent") or Instance.new("BindableEvent", ReplicatedStorage)
-BindableEvent.Name = "client"
-local bindListeners = {}
-
 function ClientNetwork:Send(messageName: string, data: any)
 	local packet = {
 		Name = messageName,
@@ -25,42 +21,26 @@ function ClientNetwork:On(messageName: string, callback)
 	end)
 end
 
--- listen to bindable event (client to client)
-function ClientNetwork:OnBind(messageName: string, callback)
-	bindListeners[messageName] = callback
-end
-
-function ClientNetwork:FireBind(messageName: string, data: any)
-	BindableEvent:Fire(
-	{
-		Name = messageName,
-		Data = data
-	})
-end
-BindableEvent.Event:Connect(function(payload)
-	local name = payload.Name
-	local data = payload.Data
-
-	local callback = bindListeners[name]
-	if callback then
-		callback(data)
-	end
-end)
-
 function ClientNetwork:Invoke(messageName: string, data: any)
 	local packet = {
 		Name = messageName,
 		Data = data
 	}
-	RemoteFunction:InvokeServer(packet)
+	return RemoteFunction:InvokeServer(packet)
 end
 
+local invokeCallbacks = {}
+
 function ClientNetwork:OnInvoke(messageName: string, callback)
-	RemoteFunction.OnClientInvoke = function(payload)
-		if payload.Name == messageName then
-			callback(payload.Data)
-		end
+	invokeCallbacks[messageName] = callback
+end
+
+RemoteFunction.OnClientInvoke = function(payload)
+	local callback = invokeCallbacks[payload.Name]
+	if callback then
+		return callback(payload.Data)
 	end
+	return nil
 end
 
 return ClientNetwork
